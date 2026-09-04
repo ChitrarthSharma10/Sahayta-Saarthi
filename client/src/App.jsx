@@ -10,6 +10,9 @@ import CourseCatalog from './pages/CourseCatalog';
 import CourseDetail from './pages/CourseDetail';
 import AssessmentRunner from './pages/AssessmentRunner';
 
+import AdminUsers from './pages/AdminUsers';
+import AdminAnnouncements from './pages/AdminAnnouncements';
+
 function RootRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -76,7 +79,7 @@ export default function App() {
             path="/users"
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminDashboard />
+                <AdminUsers />
               </ProtectedRoute>
             }
           />
@@ -84,7 +87,7 @@ export default function App() {
             path="/announcements"
             element={
               <ProtectedRoute allowedRoles={['Admin']}>
-                <AdminDashboard />
+                <AdminAnnouncements />
               </ProtectedRoute>
             }
           />

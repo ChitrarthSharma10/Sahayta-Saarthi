@@ -26,8 +26,8 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Auto-approve trainees and admins, trainers require admin approval by default for new registrations unless demo
-    const approved = role === 'Admin' || role === 'Trainee';
+    // All new registrations require admin approval
+    const approved = false;
 
     const user = await User.create({
       name,
@@ -39,9 +39,8 @@ export const register = async (req, res) => {
       approved
     });
 
-    const token = generateToken(user);
     res.status(201).json({
-      token,
+      message: 'Registration successful! Your account is pending admin approval.',
       user: {
         id: user._id,
         name: user.name,

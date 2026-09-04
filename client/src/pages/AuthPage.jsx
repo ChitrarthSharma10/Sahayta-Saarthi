@@ -23,8 +23,9 @@ export default function AuthPage() {
     try {
       if (isRegister) {
         const skillsArr = verifiedSkills.split(',').map(s => s.trim()).filter(Boolean);
-        const user = await register({ name, email, password, role, verifiedSkills: skillsArr });
-        redirectUser(user.role);
+        const res = await register({ name, email, password, role, verifiedSkills: skillsArr });
+        alert(res.message || 'Registration successful. Your account is pending admin approval.');
+        setIsRegister(false); // Switch back to sign-in tab
       } else {
         const user = await login(email, password);
         redirectUser(user.role);
