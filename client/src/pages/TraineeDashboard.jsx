@@ -5,24 +5,27 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import DemoSwitcher from '../components/DemoSwitcher';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, Target, UserCheck, Award, ArrowUpRight, Sparkles, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { BookOpen, Target, UserCheck, Award, ArrowUpRight, Sparkles, CheckCircle2, XCircle, Clock, Megaphone } from 'lucide-react';
 
 export default function TraineeDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [results, setResults] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [courseRes, resultRes] = await Promise.all([
+        const [courseRes, resultRes, annRes] = await Promise.all([
           api.get('/courses'),
-          api.get('/assessments/results')
+          api.get('/assessments/results'),
+          api.get('/announcements')
         ]);
         setCourses(courseRes.data);
         setResults(resultRes.data);
+        setAnnouncements(annRes.data);
       } catch (err) {
         console.error('Error fetching trainee dashboard data:', err);
       } finally {
@@ -140,6 +143,30 @@ export default function TraineeDashboard() {
                       <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                       {skill}
                     </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Announcements Feed */}
+            {announcements.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <Megaphone className="w-4 h-4 text-indigo-600" />
+                  Organization Announcements
+                </h3>
+                <div className="space-y-3">
+                  {announcements.map((ann) => (
+                    <div key={ann._id} className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-extrabold text-slate-900 text-sm">{ann.title}</h4>
+                        <span className="text-[10px] text-slate-400 font-semibold">
+                          {new Date(ann.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed">{ann.content}</p>
+                      <div className="mt-2 text-[10px] font-bold text-indigo-600">By {ann.authorName}</div>
+                    </div>
                   ))}
                 </div>
               </div>
